@@ -2,7 +2,7 @@
 
 namespace App\Format;
 
-class BaseFormat
+abstract class BaseFormat
 {
     protected array $data;
 
@@ -11,10 +11,7 @@ class BaseFormat
         $this->data = $data;
     }
 
-    public function convert(): false|string
-    {
-        return "I'm not converting anything";
-    }
+    public abstract function convert();
 
     public function __toString(): string
     {
