@@ -1,0 +1,5 @@
+/storage_db/
+/var/log/*
+/vendor/
+.env
+/.idea/

@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  app:
+    container_name: "app_${PROJECT_NAME}"
+    build: .docker
+    volumes:
+      - ./:/var/www
+    ports:
+      - ${APP_HTTP_PORT}
+      - ${APP_HTTPS_PORT}
+    environment:
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+    networks:
+      - dev
+
+  ###> doctrine/doctrine-bundle ###
+  db:
+    container_name: "db_${PROJECT_NAME}"
+    image: mysql:latest
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      #POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      #POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      #POSTGRES_USER: ${POSTGRES_USER:-app}
+    volumes:
+      - ./storage_db/mysql:/var/lib/mysql
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+    ports:
+      - ${DB_PORT}
+    networks:
+      - dev
+  ###< doctrine/doctrine-bundle ###
+
+
+  dbmanager:
+    container_name: "dbmanager_${PROJECT_NAME}"
+    image: phpmyadmin:latest
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - ${DBMANAGER_PORT}
+    environment:
+      PMA_HOST: db
+    networks:
+      - dev
+
+networks:
+  dev:
