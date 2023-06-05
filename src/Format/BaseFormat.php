@@ -13,6 +13,8 @@ abstract class BaseFormat
 
     public abstract function convert();
 
+    // public abstract function convertFromString();
+
     public function __toString(): string
     {
         return $this->convert();
