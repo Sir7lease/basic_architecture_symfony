@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Format;
 
-class YAML extends BaseFormat implements FromStringInterface, NamedFormatInterface
+class YAML extends BaseFormat
 {
     public function convert(): string
     {
@@ -13,11 +15,6 @@ class YAML extends BaseFormat implements FromStringInterface, NamedFormatInterfa
         }
 
         return htmlspecialchars_decode($result);
-    }
-
-    public function convertFromString(string $string)
-    {
-        // TODO: Implement convertFromString() method.
     }
 
     public function getName(): string
