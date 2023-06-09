@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Format;
 
-class YAML extends BaseFormat
+class YAML extends BaseFormat implements FormatInterface, NamedFormatInterface
 {
     public function convert(): string
     {

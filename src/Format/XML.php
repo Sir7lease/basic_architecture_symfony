@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Format;
 
-class XML extends BaseFormat
+class XML extends BaseFormat implements FormatInterface, NamedFormatInterface
+
 {
     public function convert(): string
     {

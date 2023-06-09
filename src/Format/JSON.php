@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Format;
 
-class JSON extends BaseFormat implements FromStringInterface, NamedFormatInterface
+class JSON extends BaseFormat implements FormatInterface, FromStringInterface, NamedFormatInterface
 {
-    public function convert(): false|string
+    public function convert(): string
     {
         return json_encode($this->data);
     }

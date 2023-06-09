@@ -1,38 +1,46 @@
 <?php
-    declare(strict_types=1);
+declare(strict_types=1);
 
-    require __DIR__ ."/../vendor/autoload.php";
+require __DIR__ ."/../vendor/autoload.php";
 
-    use App\Format\BaseFormat;
-    use App\Format\JSON;
-    use App\Format\NamedFormatInterface;
-    use App\Format\XML;
-    use App\Format\YAML;
+use App\Container;
+use App\Controller\IndexController;
+use App\Format\JSON;
+use App\Format\XML;
+use App\Format\YAML;
+use App\Service\Serializer;
 
-    print_r("Reflection\n\n");
+print_r("Simple Service Container\n\n");
 
-    $data = [
-        "name" => "John",
-        "surname" => "Doe"
-    ];
 
-    $formats = [
-        new JSON($data),
-        new XML($data),
-        new YAML($data),
-    ];
 
-    $class = new ReflectionClass(JSON::class);
-    var_dump($class);
-    $method = $class->getConstructor();
-    var_dump($method);
-    $parameters = $method->getParameters();
-    var_dump($parameters);
 
-    foreach ($parameters as $parameter) {
-        $type = $parameter->getType();
-        var_dump((string)$type);
-        var_dump($type->isBuiltin());
-        var_dump($parameter->allowsNull());
-        var_dump($parameter->getDefaultValue());
-    }
+$container = new Container();
+
+$container->addService('format.json', function () use ($container) {
+    return new JSON();
+});
+$container->addService('format.xml', function () use ($container) {
+    return new XML();
+});
+
+$container->addService('format', function () use ($container) {
+    return $container->getService('format.xml');
+});
+
+$container->addService('serializer', function () use ($container) {
+    return new Serializer($container->getService('format'));
+});
+
+$container->addService('controller.index', function () use ($container) {
+    return new IndexController($container->getService('serializer'));
+});
+
+var_dump($container->getServices());
+var_dump($container->getService('controller.index')->index());
+
+//$formats = [
+//    new JSON(),
+//    new XML(),
+//    new YAML(),
+//];

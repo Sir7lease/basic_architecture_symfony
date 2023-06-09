@@ -8,12 +8,7 @@ abstract class BaseFormat
 {
     protected array $data;
 
-    public function __construct(array $data = [])
-    {
-        $this->data = $data;
-    }
-
-    public abstract function convert();
+    public abstract function convert(): string;
 
     // public abstract function convertFromString();
 
@@ -21,8 +16,6 @@ abstract class BaseFormat
     {
         return $this->convert();
     }
-
-
 
 
     /**
