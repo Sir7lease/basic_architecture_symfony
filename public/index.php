@@ -9,7 +9,7 @@
     use App\Format\XML;
     use App\Format\YAML;
 
-    print_r("Anonymous functions\n\n");
+    print_r("Reflection\n\n");
 
     $data = [
         "name" => "John",
@@ -22,17 +22,17 @@
         new YAML($data),
     ];
 
-    function findByName(string $name, array $formats): ?BaseFormat
-    {
-        $found = array_filter($formats, function($format) use ($name) {
-            return $format->getName() === $name;
-        });
+    $class = new ReflectionClass(JSON::class);
+    var_dump($class);
+    $method = $class->getConstructor();
+    var_dump($method);
+    $parameters = $method->getParameters();
+    var_dump($parameters);
 
-        if(count($found)) {
-            return reset($found);
-        }
-
-        return null;
+    foreach ($parameters as $parameter) {
+        $type = $parameter->getType();
+        var_dump((string)$type);
+        var_dump($type->isBuiltin());
+        var_dump($parameter->allowsNull());
+        var_dump($parameter->getDefaultValue());
     }
-
-    var_dump(findByName('XML', $formats));
