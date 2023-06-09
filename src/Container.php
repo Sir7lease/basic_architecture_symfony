@@ -7,10 +7,30 @@ use Closure;
 class Container
 {
     private array $services = [];
+    private array $aliases = [];
 
-    public function addService(string $name, Closure $closure): void
+    public function addService(string $name, Closure $closure, ?string $alias = null): void
     {
         $this->services[$name] = $closure;
+
+        if($alias) {
+            $this->addAlias($alias, $name);
+        }
+    }
+
+    public function addAlias(string $alias, string $service): void
+    {
+        $this->aliases[$alias] = $service;
+    }
+
+    public function hasAlias(string $name): bool
+    {
+        return isset($this->aliases[$name]);
+    }
+
+    public function getAlias(string $name)
+    {
+        return $this->getService($this->aliases[$name]);
     }
 
     private function hasService(string $name): bool
@@ -24,8 +44,7 @@ class Container
             return null;
         }
 
-        if($this->services[$name] instanceof Closure)
-        {
+        if($this->services[$name] instanceof Closure) {
             $this->services[$name] = $this->services[$name]();
         }
 
@@ -35,7 +54,23 @@ class Container
     public function getServices(): array
     {
         return [
-            'services' => array_keys($this->services)
+            'services' => array_keys($this->services),
+            'aliases' => $this->aliases
         ];
+    }
+
+    public function loadServices(string $namespace): void
+    {
+        $baseDir = __DIR__ .'/';
+        $actualDirectory = str_replace('\\', '/', $namespace);
+        $actualDirectory = $baseDir . substr(
+            $actualDirectory,
+            strpos($actualDirectory, '/', 1)
+        );
+
+        $files = array_filter(scandir($actualDirectory), function($file) {
+            return $file !== '.' && $file !== '..';
+        });
+
     }
 }
