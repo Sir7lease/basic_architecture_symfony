@@ -1,39 +1,10 @@
 <?php
 declare(strict_types=1);
 
+
+use App\Kernel;
+
 require __DIR__ ."/../vendor/autoload.php";
 
-use App\Container;
-use App\Format\FormatInterface;
-use App\Format\JSON;
-use App\Format\XML;
-
-print_r("Autowired Service Container\n\n");
-
-$container = new Container();
-
-$container->addService('format.json', function () use ($container) {
-    return new JSON();
-});
-$container->addService('format.xml', function () use ($container) {
-    return new XML();
-});
-
-$container->addService('format', function () use ($container) {
-    return $container->getService('format.json');
-}, FormatInterface::class);
-
-var_dump($container->getServices());
-
-$container->loadServices('App\\Service');
-$container->loadServices('App\\Controller');
-
-var_dump($container->getServices());
-var_dump($container->getService('App\\Controller\\IndexController')->index());
-var_dump($container->getService('App\\Controller\\PostController')->index());
-
-//$formats = [
-//    new JSON(),
-//    new XML(),
-//    new YAML(),
-//];
+$kernel = (new Kernel())->boot();
+$kernel->handleRequest();
